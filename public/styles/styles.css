@@ -126,8 +126,10 @@ h1 {
 }
 
 .saved-projects {
+  align-items: center;
   border-top: 2px solid black;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   padding-top: 10px;
 }

@@ -1,4 +1,6 @@
 const generateButton = $(".generate-button");
+const createProjectButton = $(".create-project-button");
+const createPaletteButton = $(".create-palette-button");
 
 const swatchOne = $(".one");
 const swatchTwo = $(".two");
@@ -14,9 +16,6 @@ const labelFive = $(".label-five");
 
 const swatches = [swatchOne, swatchTwo, swatchThree, swatchFour, swatchFive];
 const labels = [labelOne, labelTwo, labelThree, labelFour, labelFive];
-
-generateButton.on("click", generateRandomPalette);
-$(".swatch").on("click", toggleLockedSwatch);
 
 function assignLabels() {
   labels.map(label => {
@@ -35,7 +34,7 @@ function generateRandomRGB() {
 function generateRandomPalette() {
   return swatches.map(swatch => {
     if (!swatch.hasClass("locked")) {
-      assignLabels();
+      assignLabels(); // probably need to find a better place for this
       swatch.css("background-color", generateRandomRGB());
     }
   });
@@ -44,3 +43,26 @@ function generateRandomPalette() {
 function toggleLockedSwatch() {
   this.classList.toggle("locked");
 }
+
+function getPaletteInfo() {
+  let colorsObject = swatches.reduce((acc, color, index) => {
+    acc[ind] = color.css("backgroundColor");
+  });
+  console.log("colorsObject", colorsObject);
+
+  let currentColors = swatches.map(color => color.css("backgroundColor"));
+  console.log(currentColors);
+}
+
+function appendProject() {
+  const projectName = $(".project-name-input").val();
+  const savedProjects = $(".saved-projects");
+  return savedProjects.append(`<div class="${projectName}">
+    <h3 class="saved-project-title">${projectName}</h3>
+  </div>`);
+}
+
+generateButton.on("click", generateRandomPalette);
+$(".swatch").on("click", toggleLockedSwatch);
+createProjectButton.on("click", appendProject);
+createPaletteButton.on("click", getPaletteInfo);
