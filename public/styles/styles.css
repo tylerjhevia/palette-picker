@@ -4,11 +4,15 @@
 }
 
 body {
+  align-items: space-around;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   margin: 0;
 }
 
 h1 {
-  color: orange;
+  text-align: center;
 }
 
 .current-palette {
@@ -21,15 +25,109 @@ h1 {
 }
 
 .swatch {
+  align-items: flex-end;
   border: 1px solid black;
+  display: flex;
   height: 200px;
+  justify-content: center;
+  padding: 10px;
   width: 200px;
 }
 
+.locked {
+  border: 4px solid gold;
+}
+
+.swatch-label {
+  background-color: white;
+  height: 20px;
+  text-align: center;
+  width: 150px;
+}
+
 .controls {
+  align-items: center;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  margin-top: 20px;
 }
 
 .generate-button {
+  background-color: lightblue;
+  border: none;
+  font-size: 24px;
+  height: 50px;
+  outline: none;
+  width: 200px;
+}
+
+.generate-button:hover,
+.create-project-button:hover,
+.create-palette-button:hover {
+  background-color: darkblue;
+  color: white;
+  cursor: pointer;
+}
+
+.generate-button:active,
+.create-project-button:active,
+.create-palette-button:active {
+  transform: scale(1.1);
+}
+
+.project-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px;
+  width: 100%;
+}
+
+.dropdown-label {
+  margin: 10px;
+}
+
+.or {
+  margin-top: 10px;
+}
+
+.project-name-input,
+.create-project-button {
+  height: 20px;
+  margin: 10px;
+  width: 200px;
+}
+
+.create-project-button {
+  background-color: lightblue;
+  border: none;
+  outline: none;
+}
+
+.palette-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px;
+  width: 100%;
+}
+
+.palette-name-input,
+.create-palette-button {
+  height: 20px;
+  margin: 10px;
+  width: 200px;
+}
+
+.create-palette-button {
+  background-color: lightblue;
+  border: none;
+  outline: none;
+}
+
+.saved-projects {
+  border-top: 2px solid black;
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
 }
