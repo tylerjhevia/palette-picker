@@ -11,14 +11,51 @@
     <h1>Palette Picker</h1>
 
     <div class='current-palette'>
-        <div class='swatch one'></div>
-        <div class='swatch two'></div>
-        <div class='swatch three'></div>
-        <div class='swatch four'></div>
-        <div class='swatch five'></div>
+        <div class='swatch one'>
+            <p class='swatch-label label-one'></p>
+        </div>
+        <div class='swatch two'>
+            <p class='swatch-label label-two'></p>
+        </div>
+        <div class='swatch three'>
+            <p class='swatch-label label-three'></p>
+        </div>
+        <div class='swatch four'>
+            <p class='swatch-label label-four'></p>
+        </div>
+        <div class='swatch five'>
+            <p class='swatch-label label-five'></p>
+        </div>
     </div>
+
     <div class='controls'>
+
         <button class='generate-button'>Generate</button>
+
+        <p class='dropdown-label'>Select project: </p>
+
+        <select class='project-dropdown'>
+                <option value='mock-1'>Mock 1</option>
+                <option value='mock-2'>Mock 2</option>
+                <option value='mock-3'>Mock 3</option>
+         </select>
+
+        <p class='or'>Or create a new one: </p>
+
+        <div class='project-controls'>
+            <input class='project-name-input' placeholder='Enter project name' />
+            <button class='create-project-button'>Create project</button>
+        </div>
+
+        <div class='palette-controls'>
+            <input class='palette-name-input' placeholder='Enter palette name' />
+            <button class='create-palette-button'>Create palette</button>
+        </div>
+
+    </div>
+
+    <div class='saved-projects'>
+        <h2 'saved-projects-header'>Saved Projects</h2>
     </div>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
