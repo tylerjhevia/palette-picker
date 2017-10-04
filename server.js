@@ -15,7 +15,7 @@ app.listen(app.get("port"), () => {
   console.log(`${app.locals.title} is running on ${app.get("port")}.`);
 });
 
-app.get("/projects", (request, response) => {
+app.get("/api/v1/projects", (request, response) => {
   database("projects")
     .select()
     .then(projects => {
@@ -26,20 +26,88 @@ app.get("/projects", (request, response) => {
     });
 });
 
-app.post("/projects", (request, response) => {
-  database("projects")
-    .insert(
-      {
-        name: request.body.name,
-        palettes: request.body.palettes,
-        id: request.body.id
-      },
-      "*"
-    )
-    .then(project => {
-      response.status(201).json(project);
+app.get("/api/v1/palettes/:project_id", (request, response) => {
+  database("palettes")
+    .where("project_id", request.params.project_id)
+    .select()
+    .then(palettes => {
+      if (palettes.length) {
+        response.status(200).json(palettes);
+      } else {
+        response.status(404).json({
+          error: "Could not find any palettes with the given project_id"
+        });
+      }
     })
     .catch(error => {
       response.status(500).json({ error });
     });
+});
+
+app.post("/api/v1/projects", (request, response) => {
+  database("projects")
+    .insert(
+      {
+        project_name: request.body.project_name
+      },
+      "id"
+    )
+    .then(projectId => {
+      response.status(201).json(projectId[0]);
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
+app.post("/api/v1/palettes", (request, response) => {
+  database("palettes")
+    .insert(
+      {
+        palette_name: request.body.palette_name,
+        color_1: request.body.color_1,
+        color_2: request.body.color_2,
+        color_3: request.body.color_3,
+        color_4: request.body.color_4,
+        color_5: request.body.color_5,
+        project_id: request.body.project_id
+      },
+      "id"
+    )
+    .then(paletteId => {
+      response.status(201).json(paletteId);
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
+
+app.delete("/api/v1/projects/delete/:id", (request, response) => {
+  database("projects")
+    .where("id", request.params.id)
+    .delete()
+    .then(response => {
+      response.status(204).json({ message: "good job" });
+    })
+    .catch(error => response.status(500).json({ error }));
+});
+
+app.delete("/api/v1/projects/delete/:id", (request, response) => {
+  database("projects")
+    .where("id", request.params.id)
+    .delete()
+    .then(response => {
+      response.status(204).json({ message: "good job" });
+    })
+    .catch(error => response.status(500).json({ error }));
+});
+
+app.delete("/api/v1/palettes/delete/:id", (request, response) => {
+  database("palettes")
+    .where("id", request.params.id)
+    .delete()
+    .then(response => {
+      response.status(204).json({ message: "good job" });
+    })
+    .catch(error => response.status(500).json({ error }));
 });
