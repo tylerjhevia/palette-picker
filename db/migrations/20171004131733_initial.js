@@ -16,7 +16,7 @@ exports.up = function(knex, Promise) {
       table.string("color_4");
       table.string("color_5");
       table.integer("project_id").unsigned();
-      table.foreign("project_id").references("projects.id");
+      table.foreign("project_id").references("projects.id").onDelete("cascade");
 
       table.timestamps(true, true);
     })
