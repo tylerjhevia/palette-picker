@@ -102,7 +102,7 @@ app.delete("/api/v1/projects/:id", (request, response) => {
     .where("id", request.params.id)
     .delete()
     .then(response => {
-      response.status(204).json({ message: "good job" });
+      response.status(204).json(response);
     })
     .catch(error => response.status(500).json({ error }));
 });
