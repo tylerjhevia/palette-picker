@@ -133,3 +133,8 @@ h1 {
   justify-content: center;
   padding-top: 10px;
 }
+
+.color-square {
+  height: 20px;
+  width: 20px;
+}
