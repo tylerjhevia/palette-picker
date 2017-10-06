@@ -80,7 +80,7 @@ function appendOneProject(project) {
 
 function fetchProjectPalettes(id = currentProjectId) {
   // const id = currentProjectId;
-  fetch(`http://localhost:3000/api/v1/palettes/${id}`)
+  fetch(`/api/v1/palettes/${id}`)
     .then(res => res.json())
     .then(res => displayCurrentPalettes(res));
 }
@@ -93,7 +93,7 @@ function createProject() {
 }
 
 function saveProjectToDB(projectName) {
-  return fetch("http://localhost:3000/api/v1/projects", {
+  return fetch("/api/v1/projects", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ project_name: projectName })
@@ -109,7 +109,7 @@ function saveProjectToDB(projectName) {
 function savePaletteToDB(colors) {
   const { color_1, color_2, color_3, color_4, color_5 } = colors;
   const paletteName = $(".palette-name-input").val();
-  fetch("http://localhost:3000/api/v1/palettes", {
+  fetch("/api/v1/palettes", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -182,7 +182,7 @@ function getProjectName() {
 
 function deletePalette(e) {
   const id = e.target.value;
-  fetch(`http://localhost:3000/api/v1/palettes/delete/${id}`, {
+  fetch(`/api/v1/palettes/delete/${id}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" }
   })
