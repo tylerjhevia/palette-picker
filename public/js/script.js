@@ -2,7 +2,7 @@ const generateButton = $(".generate-button");
 const createProjectButton = $(".create-project-button");
 const createPaletteButton = $(".create-palette-button");
 
-let currentProjectId = 1;
+let currentProjectId = null;
 
 const swatchOne = $(".one");
 const swatchTwo = $(".two");
@@ -71,14 +71,15 @@ function appendAllProjects(projects) {
 
 function appendOneProject(project) {
   const { project_name, id } = project;
-  return $(".saved-projects").append(`<div class="project">
+  $(".saved-projects").append(`<div class="project ${project_name}">
     <h3 class="saved-project-title">${project_name}</h3> 
     <p class='project_id'>${id}</p>
   </div>`);
+  $(`.${project_name}`).append("");
 }
 
-function fetchProject(e) {
-  const id = this.innerHTML;
+function fetchProjectPalettes() {
+  const id = currentProjectId;
   fetch(`http://localhost:3000/api/v1/palettes/${id}`)
     .then(res => res.json())
     .then(res => displayCurrentPalettes(res));
@@ -92,7 +93,7 @@ function createProject() {
 }
 
 function saveProjectToDB(projectName) {
-  fetch("http://localhost:3000/api/v1/projects", {
+  return fetch("http://localhost:3000/api/v1/projects", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ project_name: projectName })
@@ -100,7 +101,7 @@ function saveProjectToDB(projectName) {
     .then(res => res.json())
     .then(res => {
       currentProjectId = res.id;
-      fetchProject();
+      fetchProjectPalettes();
       fetchAllProjects();
     });
 }
@@ -122,7 +123,7 @@ function savePaletteToDB(colors) {
     })
   })
     .then(res => res.json())
-    .then(res => fetchProject());
+    .then(res => fetchProjectPalettes());
 }
 
 function displayCurrentPalettes(palettes) {
@@ -136,16 +137,10 @@ function displayCurrentPalettes(palettes) {
     <div class='color-square' style="background-color:${palette.color_3}"></div>
     <div class='color-square' style="background-color:${palette.color_4}"></div>
     <div class='color-square' style="background-color:${palette.color_5}"></div>
+    <button class='delete-button'>Delete Palette</button>
   </div>`);
       })
     : showEmptyMessage();
-}
-
-function showEmptyMessage() {
-  $(".current-palettes").empty();
-  $(".current-palettes").append(
-    `<p class='empty-message'>This project has no saved palettes!</p>`
-  );
 }
 
 function displaySelectedPalette() {
@@ -158,9 +153,36 @@ function displaySelectedPalette() {
   swatchFive.css("background-color", selectedPalette[5].style.backgroundColor);
   assignLabels();
 }
+
+function showEmptyMessage() {
+  $(".current-palettes").empty();
+  $(".current-palettes").append(
+    `<p class='empty-message'>This project has no saved palettes!</p>`
+  );
+}
+
+function updateCurrentProject() {
+  currentProjectId = this.innerHTML;
+  getProjectName();
+  fetchProjectPalettes();
+}
+
+function getProjectName() {
+  return fetch("http://localhost:3000/api/v1/projects")
+    .then(res => res.json())
+    .then(res => {
+      let current = res.filter(
+        project => project.id === parseInt(currentProjectId)
+      );
+      let project_name = current[0].project_name;
+      $(".selected-project").text(`Selected Project: ${project_name}`);
+    })
+    .catch(error => console.log(error));
+}
+
 generateButton.on("click", generateRandomPalette);
 $(".swatch").on("click", toggleLockedSwatch);
 createProjectButton.on("click", createProject);
 createPaletteButton.on("click", getPaletteInfo);
-$(".saved-projects").on("click", ".project_id", fetchProject);
+$(".saved-projects").on("click", ".project_id", updateCurrentProject);
 $(".current-palettes").on("click", ".current-palette", displaySelectedPalette);
