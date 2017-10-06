@@ -58,6 +58,7 @@ function getPaletteInfo() {
 }
 
 function fetchAllProjects() {
+  $(".saved-projects").empty();
   return fetch("http://localhost:3000/api/v1/projects")
     .then(res => res.json())
     .then(res => appendAllProjects(res))
@@ -76,7 +77,7 @@ function appendOneProject(project) {
   </div>`);
 }
 
-function fetchProject() {
+function fetchProject(e) {
   const id = this.innerHTML;
   fetch(`http://localhost:3000/api/v1/palettes/${id}`)
     .then(res => res.json())
@@ -85,6 +86,7 @@ function fetchProject() {
 
 function createProject() {
   const projectName = $(".project-name-input").val();
+  $(".selected-project").text(`Selected Project: ${projectName}`);
   $(".project-name-input").val("");
   saveProjectToDB(projectName);
 }
@@ -97,8 +99,9 @@ function saveProjectToDB(projectName) {
   })
     .then(res => res.json())
     .then(res => {
-      console.log(res);
       currentProjectId = res.id;
+      fetchProject();
+      fetchAllProjects();
     });
 }
 
@@ -119,27 +122,41 @@ function savePaletteToDB(colors) {
     })
   })
     .then(res => res.json())
-    .then(res => console.log(res));
+    .then(res => fetchProject());
 }
 
 function displayCurrentPalettes(palettes) {
   $(".current-palettes").empty();
-  palettes.map(palette => {
-    $(".current-palettes")
-      .append(`<div class="current-palette"><h4>${palette.palette_name}</h4>
+  palettes.length
+    ? palettes.map(palette => {
+        $(".current-palettes")
+          .append(`<div class="current-palette"><h4>${palette.palette_name}</h4>
     <div class='color-square' style="background-color:${palette.color_1}"></div>
     <div class='color-square' style="background-color:${palette.color_2}"></div>
     <div class='color-square' style="background-color:${palette.color_3}"></div>
     <div class='color-square' style="background-color:${palette.color_4}"></div>
     <div class='color-square' style="background-color:${palette.color_5}"></div>
   </div>`);
-  });
+      })
+    : showEmptyMessage();
+}
+
+function showEmptyMessage() {
+  $(".current-palettes").empty();
+  $(".current-palettes").append(
+    `<p class='empty-message'>This project has no saved palettes!</p>`
+  );
 }
 
 function displaySelectedPalette() {
   let selectedPalette = this.children;
-  selectedPalette.pop;
-  console.log("selectedPalette", selectedPalette);
+
+  swatchOne.css("background-color", selectedPalette[1].style.backgroundColor);
+  swatchTwo.css("background-color", selectedPalette[2].style.backgroundColor);
+  swatchThree.css("background-color", selectedPalette[3].style.backgroundColor);
+  swatchFour.css("background-color", selectedPalette[4].style.backgroundColor);
+  swatchFive.css("background-color", selectedPalette[5].style.backgroundColor);
+  assignLabels();
 }
 generateButton.on("click", generateRandomPalette);
 $(".swatch").on("click", toggleLockedSwatch);

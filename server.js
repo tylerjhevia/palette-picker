@@ -97,16 +97,6 @@ app.post("/api/v1/palettes", (request, response) => {
     });
 });
 
-// app.delete("/api/v1/projects/delete/:id", (request, response) => {
-//   database("projects")
-//     .where("id", request.params.id)
-//     .delete()
-//     .then(response => {
-//       response.status(204).json({ message: "good job" });
-//     })
-//     .catch(error => response.status(500).json({ error }));
-// });
-
 app.delete("/api/v1/projects/:id", (request, response) => {
   database("projects")
     .where("id", request.params.id)
