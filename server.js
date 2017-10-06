@@ -107,7 +107,7 @@ app.post("/api/v1/palettes", (request, response) => {
 //     .catch(error => response.status(500).json({ error }));
 // });
 
-app.delete("/api/v1/projects/delete/:id", (request, response) => {
+app.delete("/api/v1/projects/:id", (request, response) => {
   database("projects")
     .where("id", request.params.id)
     .delete()

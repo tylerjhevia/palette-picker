@@ -171,7 +171,6 @@ describe("API Routes", () => {
             .request(server) // Can also test that it is actually in the database
             .get("/api/v1/palettes/1")
             .end((err, response) => {
-              console.log(response.body[3]);
               response.should.have.status(200);
               response.should.be.json;
               response.body.should.be.a("array");
@@ -200,20 +199,21 @@ describe("API Routes", () => {
     });
   });
 
-  describe("DELETE /api/v1/projects/delete/:id", () => {
+  describe("DELETE /api/v1/projects/:id", () => {
     it("should delete a project from the database", done => {
       chai
         .request(server)
         .delete("/api/v1/projects/delete/2") // Notice the change in the verb
         .end((err, response) => {
+          console.log(response);
           response.should.have.status(201); // Different status here
-          response.body[0].should.be.a("number");
+          //   response.body[0].should.be.a("number");
 
           chai
             .request(server) // Can also test that it is actually in the database
             .get("/api/v1/projects")
             .end((err, response) => {
-              console.log(response.body[3]);
+              console.log(response.body);
               response.should.have.status(200);
               response.should.be.json;
               response.body.should.be.a("array");
