@@ -28,20 +28,23 @@
         </div>
     </div>
 
+    <h2 class='selected-project'></h2>
+
     <div class='controls'>
 
         <button class='generate-button'>Generate</button>
 
         <p class='dropdown-label'>Select project: </p>
 
-        <select class='project-dropdown'>
-                <option value='mock-1'>Mock 1</option>
-                <option value='mock-2'>Mock 2</option>
-                <option value='mock-3'>Mock 3</option>
-         </select>
 
+        <div class='current-palettes'>
+
+        </div>
+
+        <div class='saved-projects'>
+            <h2 'saved-projects-header'>Saved Projects</h2>
+        </div>
         <p class='or'>Or create a new one: </p>
-
         <div class='project-controls'>
             <input class='project-name-input' placeholder='Enter project name' />
             <button class='create-project-button'>Create project</button>
@@ -52,15 +55,8 @@
             <button class='create-palette-button'>Create palette</button>
         </div>
 
-        <div class='current-palettes'>
-
-        </div>
-
     </div>
 
-    <div class='saved-projects'>
-        <h2 'saved-projects-header'>Saved Projects</h2>
-    </div>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src='js/script.js'></script>
