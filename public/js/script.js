@@ -32,7 +32,7 @@ function generateRandomRGB() {
 function generateRandomPalette() {
   return swatches.map(swatch => {
     if (!swatch.hasClass("locked")) {
-      assignLabels(); // probably need to find a better place for this
+      assignLabels();
       swatch.css("background-color", generateRandomRGB());
     }
   });
@@ -78,8 +78,8 @@ function appendOneProject(project) {
   $(`.${project_name}`).append("");
 }
 
-function fetchProjectPalettes() {
-  const id = currentProjectId;
+function fetchProjectPalettes(id = currentProjectId) {
+  // const id = currentProjectId;
   fetch(`http://localhost:3000/api/v1/palettes/${id}`)
     .then(res => res.json())
     .then(res => displayCurrentPalettes(res));
@@ -137,7 +137,7 @@ function displayCurrentPalettes(palettes) {
     <div class='color-square' style="background-color:${palette.color_3}"></div>
     <div class='color-square' style="background-color:${palette.color_4}"></div>
     <div class='color-square' style="background-color:${palette.color_5}"></div>
-    <button class='delete-button'>Delete Palette</button>
+    <button class='delete-button' value=${palette.id}>Delete Palette</button>
   </div>`);
       })
     : showEmptyMessage();
@@ -180,12 +180,13 @@ function getProjectName() {
     .catch(error => console.log(error));
 }
 
-function deletePalette(id) {
+function deletePalette(e) {
+  const id = e.target.value;
   fetch(`http://localhost:3000/api/v1/palettes/delete/${id}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" }
   })
-    .then(res => res.json())
+    .then(res => fetchProjectPalettes())
     .catch(res => console.log(res));
 }
 
@@ -194,4 +195,6 @@ $(".swatch").on("click", toggleLockedSwatch);
 createProjectButton.on("click", createProject);
 createPaletteButton.on("click", getPaletteInfo);
 $(".saved-projects").on("click", ".project_id", updateCurrentProject);
-$(".current-palettes").on("click", ".current-palette", displaySelectedPalette);
+$(".current-palettes")
+  .on("click", ".current-palette", displaySelectedPalette)
+  .on("click", ".current-palette", ".delete-button", deletePalette);
