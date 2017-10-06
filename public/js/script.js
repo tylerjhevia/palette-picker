@@ -71,7 +71,7 @@ function appendAllProjects(projects) {
 
 function appendOneProject(project) {
   const { project_name, id } = project;
-  $(".saved-projects").append(`<div class="project ${project_name}">
+  $(".saved-projects").append(`<div class="project ${project_name}" value=${id}>
     <h3 class="saved-project-title">${project_name}</h3> 
     <p class='project_id'>${id}</p>
   </div>`);
@@ -178,6 +178,14 @@ function getProjectName() {
       $(".selected-project").text(`Selected Project: ${project_name}`);
     })
     .catch(error => console.log(error));
+}
+
+function deleteProject(id) {
+  fetch(`http://localhost:3000/api/v1/projects/${id}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ project_name: projectName })
+  });
 }
 
 generateButton.on("click", generateRandomPalette);
