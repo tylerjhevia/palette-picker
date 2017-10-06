@@ -37,16 +37,11 @@ describe("Client Routes", () => {
 
 describe("API Routes", () => {
   beforeEach(done => {
-    database.migrate.rollback;
-  });
-  before(done => {
     database.migrate
-      .latest()
-      //   .then(() => {
-      //     database.seed.run();
-      //   })
+      .rollback()
+      .then(() => database.migrate.latest())
       .then(() => done())
-      .catch(error => console.log("error", error));
+      .catch(error => console.log(error));
   });
 
   beforeEach(done => {
@@ -63,7 +58,6 @@ describe("API Routes", () => {
   describe("GET /api/v1/projects", () => {
     it("should return all saved projects", done => {
       chai.request(server).get("/api/v1/projects").end((err, response) => {
-        console.log(response.body);
         response.should.have.status(200);
         response.should.be.json;
         response.body.should.be.a("array");
@@ -71,7 +65,7 @@ describe("API Routes", () => {
         response.body[0].should.have.property("project_name");
         response.body[0].project_name.should.equal("Important");
         response.body[0].should.have.property("id");
-        response.body[0].id.should.be.a("number");
+        response.body[0].id.should.equal(1);
         response.body[0].should.have.property("created_at");
         response.body[0].created_at.should.be.a("string");
         response.body[0].should.have.property("updated_at");
@@ -83,7 +77,7 @@ describe("API Routes", () => {
 
   describe("GET /api/v1/palettes/:project_id", () => {
     it("should return palettes for a given project", done => {
-      chai.request(server).get("/api/v1/palettes/10").end((err, response) => {
+      chai.request(server).get("/api/v1/palettes/2").end((err, response) => {
         response.should.have.status(200);
         response.should.be.json;
         response.body.should.be.a("array");
@@ -101,9 +95,9 @@ describe("API Routes", () => {
         response.body[0].should.have.property("color_5");
         response.body[0].color_5.should.equal("rgb(150, 242, 98)");
         response.body[0].should.have.property("id");
-        response.body[0].id.should.equal(28);
+        response.body[0].id.should.be.a("number");
         response.body[0].should.have.property("project_id");
-        response.body[0].project_id.should.equal(10);
+        response.body[0].project_id.should.equal(2);
         response.body[0].should.have.property("created_at");
         response.body[0].should.have.property("updated_at");
         done();
@@ -111,42 +105,140 @@ describe("API Routes", () => {
     });
   });
 
-  //   describe("POST /api/v1/projects", () => {
-  //     it("should create a new project", done => {
-  //       chai
-  //         .request(server)
-  //         .post("/api/v1/projects") // Notice the change in the verb
-  //         .send({
-  //           // Here is the information sent in the body or the request
-  //           project_name: "Donuts"
-  //         })
-  //         .end((err, response) => {
-  //           response.should.have.status(201); // Different status here
-  //           console.log(response.body);
-  //           response.body.should.be.a("object");
-  //           response.body.should.have.property("lastname");
-  //           response.body.lastname.should.equal("Knuth");
-  //           response.body.should.have.property("program");
-  //           response.body.program.should.equal("FE");
-  //           response.body.should.have.property("enrolled");
-  //           response.body.enrolled.should.equal(true);
-  //           chai
-  //             .request(server) // Can also test that it is actually in the database
-  //             .get("/api/v1/students")
-  //             .end((err, response) => {
-  //               response.should.have.status(200);
-  //               response.should.be.json;
-  //               response.body.should.be.a("array");
-  //               response.body.length.should.equal(4);
-  //               response.body[3].should.have.property("lastname");
-  //               response.body[3].lastname.should.equal("Knuth");
-  //               response.body[3].should.have.property("program");
-  //               response.body[3].program.should.equal("FE");
-  //               response.body[3].should.have.property("enrolled");
-  //               response.body[3].enrolled.should.equal(true);
-  //               done();
-  //             });
-  //         });
-  //     });
-  //   });
+  describe("POST /api/v1/projects", () => {
+    it("should save a new project", done => {
+      chai
+        .request(server)
+        .post("/api/v1/projects") // Notice the change in the verb
+        .send({
+          // Here is the information sent in the body or the request
+          project_name: "Donuts"
+        })
+        .end((err, response) => {
+          response.should.have.status(201); // Different status here
+          response.body.should.be.a("object");
+          response.body.should.have.property("project_name");
+          response.body.project_name.should.equal("Donuts");
+          response.body.should.have.property("id");
+          response.body.id.should.be.a("number");
+          response.body.should.have.property("created_at");
+          response.body.created_at.should.be.a("string");
+          response.body.should.have.property("updated_at");
+          response.body.updated_at.should.be.a("string");
+
+          chai
+            .request(server) // Can also test that it is actually in the database
+            .get("/api/v1/projects")
+            .end((err, response) => {
+              response.should.have.status(200);
+              response.should.be.json;
+              response.body.should.be.a("array");
+              response.body.length.should.equal(4);
+              response.body[3].should.have.property("project_name");
+              response.body[3].project_name.should.equal("Donuts");
+              response.body[3].should.have.property("id");
+              response.body[3].id.should.be.a("number");
+              response.body[3].should.have.property("created_at");
+              response.body[3].created_at.should.be.a("string");
+              response.body[3].should.have.property("updated_at");
+              response.body[3].updated_at.should.be.a("string");
+              done();
+            });
+        });
+    });
+  });
+
+  describe("POST /api/v1/palettes", () => {
+    it("should save a new palette", done => {
+      chai
+        .request(server)
+        .post("/api/v1/palettes") // Notice the change in the verb
+        .send({
+          // Here is the information sent in the body or the request
+          palette_name: "Earthy",
+          color_1: "rgb(29, 150, 122)",
+          color_2: "rgb(239, 253, 5)",
+          color_3: "rgb(172, 179, 99)",
+          color_4: "rgb(238, 112, 226)",
+          color_5: "rgb(215, 236, 204)",
+          project_id: 1
+        })
+        .end((err, response) => {
+          response.should.have.status(201); // Different status here
+          response.body[0].should.be.a("number");
+
+          chai
+            .request(server) // Can also test that it is actually in the database
+            .get("/api/v1/palettes/1")
+            .end((err, response) => {
+              console.log(response.body[3]);
+              response.should.have.status(200);
+              response.should.be.json;
+              response.body.should.be.a("array");
+              response.body.length.should.equal(4);
+              response.body[3].should.have.property("id");
+              response.body[3].id.should.be.a("number");
+              response.body[3].should.have.property("palette_name");
+              response.body[3].palette_name.should.equal("Earthy");
+              response.body[3].should.have.property("color_1");
+              response.body[3].color_1.should.equal("rgb(29, 150, 122)");
+              response.body[3].should.have.property("color_2");
+              response.body[3].color_2.should.equal("rgb(239, 253, 5)");
+              response.body[3].should.have.property("color_3");
+              response.body[3].color_3.should.equal("rgb(172, 179, 99)");
+              response.body[3].should.have.property("color_4");
+              response.body[3].color_4.should.equal("rgb(238, 112, 226)");
+              response.body[3].should.have.property("color_5");
+              response.body[3].color_5.should.equal("rgb(215, 236, 204)");
+              response.body[3].should.have.property("created_at");
+              response.body[3].created_at.should.be.a("string");
+              response.body[3].should.have.property("updated_at");
+              response.body[3].updated_at.should.be.a("string");
+              done();
+            });
+        });
+    });
+  });
+
+  describe("DELETE /api/v1/projects/delete/:id", () => {
+    it("should delete a project from the database", done => {
+      chai
+        .request(server)
+        .delete("/api/v1/projects/delete/2") // Notice the change in the verb
+        .end((err, response) => {
+          response.should.have.status(201); // Different status here
+          response.body[0].should.be.a("number");
+
+          chai
+            .request(server) // Can also test that it is actually in the database
+            .get("/api/v1/projects")
+            .end((err, response) => {
+              console.log(response.body[3]);
+              response.should.have.status(200);
+              response.should.be.json;
+              response.body.should.be.a("array");
+              response.body.length.should.equal(4);
+              response.body[3].should.have.property("id");
+              response.body[3].id.should.be.a("number");
+              response.body[3].should.have.property("palette_name");
+              response.body[3].palette_name.should.equal("Earthy");
+              response.body[3].should.have.property("color_1");
+              response.body[3].color_1.should.equal("rgb(29, 150, 122)");
+              response.body[3].should.have.property("color_2");
+              response.body[3].color_2.should.equal("rgb(239, 253, 5)");
+              response.body[3].should.have.property("color_3");
+              response.body[3].color_3.should.equal("rgb(172, 179, 99)");
+              response.body[3].should.have.property("color_4");
+              response.body[3].color_4.should.equal("rgb(238, 112, 226)");
+              response.body[3].should.have.property("color_5");
+              response.body[3].color_5.should.equal("rgb(215, 236, 204)");
+              response.body[3].should.have.property("created_at");
+              response.body[3].created_at.should.be.a("string");
+              response.body[3].should.have.property("updated_at");
+              response.body[3].updated_at.should.be.a("string");
+              done();
+            });
+        });
+    });
+  });
 });
