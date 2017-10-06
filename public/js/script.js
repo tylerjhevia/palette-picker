@@ -184,7 +184,9 @@ function deletePalette(id) {
   fetch(`http://localhost:3000/api/v1/palettes/delete/${id}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" }
-  });
+  })
+    .then(res => res.json())
+    .catch(res => console.log(res));
 }
 
 generateButton.on("click", generateRandomPalette);
