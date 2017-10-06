@@ -6,8 +6,9 @@ const database = require("knex")(configuration);
 const http = require("http");
 const bodyParser = require("body-parser");
 const cors = require("express-cors");
+const path = require("path");
 
-// app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors());
 app.use(function(req, res, next) {
@@ -125,3 +126,5 @@ app.delete("/api/v1/palettes/delete/:id", (request, response) => {
     })
     .catch(error => response.status(500).json({ error }));
 });
+
+module.exports = app;
