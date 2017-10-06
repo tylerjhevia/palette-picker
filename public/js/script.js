@@ -180,11 +180,10 @@ function getProjectName() {
     .catch(error => console.log(error));
 }
 
-function deleteProject(id) {
-  fetch(`http://localhost:3000/api/v1/projects/${id}`, {
+function deletePalette(id) {
+  fetch(`http://localhost:3000/api/v1/palettes/delete/${id}`, {
     method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ project_name: projectName })
+    headers: { "Content-Type": "application/json" }
   });
 }
 
