@@ -195,7 +195,7 @@ describe("API Routes", () => {
   });
 
   describe("DELETE /api/v1/palettes/delete/:id", () => {
-    it.only("should delete a palette from the database", done => {
+    it("should delete a palette from the database", done => {
       chai.request(server).get("/api/v1/palettes/1").end((err, response) => {
         response.should.have.status(200);
         response.should.be.json;
@@ -232,6 +232,43 @@ describe("API Routes", () => {
                 response.body[0].should.have.property("color_3");
                 response.body[0].should.have.property("color_4");
                 response.body[0].should.have.property("color_5");
+                response.body[0].should.have.property("created_at");
+                response.body[0].should.have.property("updated_at");
+
+                done();
+              });
+          });
+      });
+    });
+  });
+
+  describe("DELETE /api/v1/projects/:id", () => {
+    it("should delete a project from the database", done => {
+      chai.request(server).get("/api/v1/projects").end((err, response) => {
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a("array");
+        response.body.length.should.equal(3);
+        response.body[0].should.have.property("id");
+        response.body[0].should.have.property("created_at");
+        response.body[0].should.have.property("updated_at");
+
+        chai
+          .request(server)
+          .delete("/api/v1/projects/1")
+          .end((err, response) => {
+            response.should.have.status(204);
+
+            chai
+              .request(server)
+              .get("/api/v1/projects")
+              .end((err, response) => {
+                response.should.have.status(200);
+                response.should.be.json;
+                response.body.should.be.a("array");
+                response.body.length.should.equal(2);
+                response.body[0].should.have.property("id");
+                response.body[0].should.have.property("project_name");
                 response.body[0].should.have.property("created_at");
                 response.body[0].should.have.property("updated_at");
 
