@@ -40,6 +40,7 @@ describe("API Routes", () => {
     database.migrate
       .rollback()
       .then(() => database.migrate.latest())
+      // .then(() => database.seed.run())
       .then(() => done())
       .catch(error => console.log(error));
   });
@@ -56,7 +57,7 @@ describe("API Routes", () => {
   });
 
   describe("GET /api/v1/projects", () => {
-    it("should return all saved projects", done => {
+    it("should fetch all saved projects", done => {
       chai.request(server).get("/api/v1/projects").end((err, response) => {
         response.should.have.status(200);
         response.should.be.json;
@@ -76,7 +77,7 @@ describe("API Routes", () => {
   });
 
   describe("GET /api/v1/palettes/:project_id", () => {
-    it("should return palettes for a given project", done => {
+    it("should fetch palettes for a given project", done => {
       chai.request(server).get("/api/v1/palettes/1").end((err, response) => {
         response.should.have.status(200);
         response.should.be.json;
@@ -101,6 +102,16 @@ describe("API Routes", () => {
         response.body[0].should.have.property("created_at");
         response.body[0].should.have.property("updated_at");
         done();
+      });
+    });
+
+    it("should respond with an error if a project has no saved palettes", () => {
+      chai.request(server).get("/api/v1/palettes/100").end((err, response) => {
+        response.should.have.status(404);
+        response.body.should.have.property("error");
+        response.body.error.should.equal(
+          "Could not find any palettes with the given project_id"
+        );
       });
     });
   });
@@ -240,6 +251,18 @@ describe("API Routes", () => {
           });
       });
     });
+
+    it("should respond with an error if palette does not exist", () => {
+      chai
+        .request(server)
+        .delete("/api/v1/palettes/delete/500")
+        .end((err, response) => {
+          response.body.should.be.a("object");
+          response.should.have.status(422);
+          response.body.should.have.property("error");
+          response.body.error.should.equal("Could not find palette");
+        });
+    });
   });
 
   describe("DELETE /api/v1/projects/:id", () => {
@@ -276,6 +299,18 @@ describe("API Routes", () => {
               });
           });
       });
+    });
+    it("should respond with an error if project does not exist", () => {
+      chai
+        .request(server)
+        .delete("/api/v1/projects/500")
+        .end((err, response) => {
+          response.body.should.be.a("object");
+          response.should.have.status(422);
+          response.body.should.have.property("error");
+          response.body.error.should.equal("Could not find project");
+          done();
+        });
     });
   });
 });
