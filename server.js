@@ -101,8 +101,10 @@ app.delete("/api/v1/projects/:id", (request, response) => {
   database("projects")
     .where("id", request.params.id)
     .delete()
-    .then(response => {
-      response.status(204).json(response);
+    .then(project => {
+      project
+        ? response.sendStatus(204)
+        : response.status(422).send({ error: "Could not find project" });
     })
     .catch(error => response.status(500).json({ error }));
 });
