@@ -111,8 +111,10 @@ app.delete("/api/v1/palettes/delete/:id", (request, response) => {
   database("palettes")
     .where("id", request.params.id)
     .delete()
-    .then(response => {
-      response.status(204).json(response);
+    .then(palette => {
+      palette
+        ? response.sendStatus(204)
+        : response.status(422).send({ error: "Could not find palette" });
     })
     .catch(error => response.status(500).json({ error }));
 });
