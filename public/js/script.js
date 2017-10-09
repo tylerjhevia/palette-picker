@@ -55,6 +55,7 @@ function getPaletteInfo() {
   }, {});
   let currentColors = swatches.map(color => color.css("backgroundColor"));
   savePaletteToDB(colorsObject);
+  $(".palette-name-input").val("");
 }
 
 function fetchAllProjects() {
@@ -77,6 +78,12 @@ function appendOneProject(project) {
     <div class='project-palettes' id=${id}></div>
   </div>`);
   fetchUnselectedProjectPalettes(id);
+}
+
+function fetchProjectPalettes(id = currentProjectId) {
+  fetch(`/api/v1/palettes/${id}`)
+    .then(res => res.json())
+    .then(res => displayCurrentPalettes(res));
 }
 
 function displayAllPalettes(palettes) {
@@ -106,12 +113,6 @@ function fetchUnselectedProjectPalettes(id) {
   fetch(`/api/v1/palettes/${id}`)
     .then(res => res.json())
     .then(res => displayAllPalettes(res));
-}
-
-function fetchProjectPalettes(id = currentProjectId) {
-  fetch(`/api/v1/palettes/${id}`)
-    .then(res => res.json())
-    .then(res => displayCurrentPalettes(res));
 }
 
 function createProject() {
@@ -175,6 +176,13 @@ function displayCurrentPalettes(palettes) {
     : showEmptyMessage();
 }
 
+function showEmptyMessage() {
+  $(".current-palettes").empty();
+  $(".current-palettes").append(
+    `<p class='empty-message'>This project has no saved palettes!</p>`
+  );
+}
+
 function displaySelectedPalette() {
   let selectedPalette = this.children;
 
@@ -186,30 +194,10 @@ function displaySelectedPalette() {
   assignLabels();
 }
 
-function showEmptyMessage() {
-  $(".current-palettes").empty();
-  $(".current-palettes").append(
-    `<p class='empty-message'>This project has no saved palettes!</p>`
-  );
-}
-
 function updateCurrentProject(e) {
   currentProjectId = $(this).data("value");
   getProjectName();
   fetchProjectPalettes();
-}
-
-function getProjectName() {
-  return fetch("http://localhost:3000/api/v1/projects")
-    .then(res => res.json())
-    .then(res => {
-      let current = res.filter(
-        project => project.id === parseInt(currentProjectId)
-      );
-      let project_name = current[0].project_name;
-      $(".selected-project").text(`Selected Project: ${project_name}`);
-    })
-    .catch(error => console.log(error));
 }
 
 function deletePalette(e) {
@@ -223,6 +211,19 @@ function deletePalette(e) {
       fetchAllProjects();
     })
     .catch(res => console.log(res));
+}
+
+function getProjectName() {
+  return fetch("http://localhost:3000/api/v1/projects")
+    .then(res => res.json())
+    .then(res => {
+      let current = res.filter(
+        project => project.id === parseInt(currentProjectId)
+      );
+      let project_name = current[0].project_name;
+      $(".selected-project").text(`Selected Project: ${project_name}`);
+    })
+    .catch(error => console.log(error));
 }
 
 generateButton.on("click", generateRandomPalette);
