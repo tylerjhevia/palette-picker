@@ -141,7 +141,6 @@ h1 {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  height: 300px;
   width: 100%;
   justify-content: center;
   overflow: scroll;
@@ -163,8 +162,22 @@ h1 {
   background-color: white;
   border: 1px solid black;
   color: black;
+  display: flex;
+  flex-direction: column;
+  opacity: .8;
   text-align: center;
-  width: 50%;
+  width: 80%;
+}
+
+.project:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.saved-palettes {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .project_id {
@@ -208,4 +221,15 @@ h1 {
   width: 100px;
   outline: none;
   border: none;
+}
+
+.project-palette {
+  height: 50px;
+  margin: 10px 0px 10px 0px;
+  width: 16%;
+}
+
+.palette-title {
+  width: 70px;
+  word-wrap: break-word;
 }
