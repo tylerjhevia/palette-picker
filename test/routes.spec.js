@@ -19,7 +19,7 @@ before(done => {
 });
 
 describe("Client Routes", () => {
-  it("should displlay the homepage", done => {
+  it("should display the homepage", done => {
     chai.request(server).get("/").end((err, response) => {
       response.should.have.status(200);
       response.should.be.html;
