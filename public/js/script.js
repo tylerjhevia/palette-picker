@@ -71,15 +71,44 @@ function appendAllProjects(projects) {
 
 function appendOneProject(project) {
   const { project_name, id } = project;
-  $(".saved-projects").append(`<div class="project ${project_name}" value=${id}>
-    <h3 class="saved-project-title">${project_name}</h3> 
-    <p class='project_id'>${id}</p>
+  $(".saved-projects")
+    .append(`<div class="project ${project_name}" data-value=${id}>
+    <h3 class="saved-project-title" data-value=${id}>${project_name}</h3> 
+    <div class='project-palettes' id=${id}></div>
   </div>`);
-  $(`.${project_name}`).append("");
+  fetchUnselectedProjectPalettes(id);
+}
+
+function displayAllPalettes(palettes) {
+  palettes.map(palette => {
+    const {
+      palette_name,
+      id,
+      color_1,
+      color_2,
+      color_3,
+      color_4,
+      color_5,
+      project_id
+    } = palette;
+    $(`#${project_id}`).append(`<div class='${palette_name} saved-palettes'>
+    <h5 class='palette-title'>${palette_name}</h5> 
+    <div class='project-palette' style='background-color:${color_1}'></div>
+    <div class='project-palette' style='background-color:${color_2}'></div>
+    <div class='project-palette' style='background-color:${color_3}'></div>
+    <div class='project-palette' style='background-color:${color_4}'></div>
+    <div class='project-palette' style='background-color:${color_5}'></div>
+    </div>`);
+  });
+}
+
+function fetchUnselectedProjectPalettes(id) {
+  fetch(`/api/v1/palettes/${id}`)
+    .then(res => res.json())
+    .then(res => displayAllPalettes(res));
 }
 
 function fetchProjectPalettes(id = currentProjectId) {
-  // const id = currentProjectId;
   fetch(`/api/v1/palettes/${id}`)
     .then(res => res.json())
     .then(res => displayCurrentPalettes(res));
@@ -123,7 +152,10 @@ function savePaletteToDB(colors) {
     })
   })
     .then(res => res.json())
-    .then(res => fetchProjectPalettes());
+    .then(res => {
+      fetchProjectPalettes();
+      fetchAllProjects();
+    });
 }
 
 function displayCurrentPalettes(palettes) {
@@ -161,8 +193,8 @@ function showEmptyMessage() {
   );
 }
 
-function updateCurrentProject() {
-  currentProjectId = this.innerHTML;
+function updateCurrentProject(e) {
+  currentProjectId = $(this).data("value");
   getProjectName();
   fetchProjectPalettes();
 }
@@ -186,7 +218,10 @@ function deletePalette(e) {
     method: "DELETE",
     headers: { "Content-Type": "application/json" }
   })
-    .then(res => fetchProjectPalettes())
+    .then(res => {
+      fetchProjectPalettes();
+      fetchAllProjects();
+    })
     .catch(res => console.log(res));
 }
 
@@ -194,7 +229,7 @@ generateButton.on("click", generateRandomPalette);
 $(".swatch").on("click", toggleLockedSwatch);
 createProjectButton.on("click", createProject);
 createPaletteButton.on("click", getPaletteInfo);
-$(".saved-projects").on("click", ".project_id", updateCurrentProject);
+$(".saved-projects").on("click", ".project", updateCurrentProject);
 $(".current-palettes")
   .on("click", ".current-palette", displaySelectedPalette)
   .on("click", ".current-palette", ".delete-button", deletePalette);
