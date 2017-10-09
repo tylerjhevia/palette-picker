@@ -40,7 +40,6 @@ describe("API Routes", () => {
     database.migrate
       .rollback()
       .then(() => database.migrate.latest())
-      // .then(() => database.seed.run())
       .then(() => done())
       .catch(error => console.log(error));
   });
