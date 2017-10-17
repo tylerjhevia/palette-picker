@@ -10,6 +10,14 @@ const path = require('path');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+const requireHTTPS = (req, res, next) => {
+  if (req.headers['x-forwarded-proto'] != 'https') {
+    return res.redirect('https://' + req.get('host') + req.url);
+  }
+  next();
+};
+app.use(requireHTTPS);
+
 app.use(cors());
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
