@@ -1,20 +1,20 @@
-const generateButton = $(".generate-button");
-const createProjectButton = $(".create-project-button");
-const createPaletteButton = $(".create-palette-button");
+const generateButton = $('.generate-button');
+const createProjectButton = $('.create-project-button');
+const createPaletteButton = $('.create-palette-button');
 
 let currentProjectId = null;
 
-const swatchOne = $(".one");
-const swatchTwo = $(".two");
-const swatchThree = $(".three");
-const swatchFour = $(".four");
-const swatchFive = $(".five");
+const swatchOne = $('.one');
+const swatchTwo = $('.two');
+const swatchThree = $('.three');
+const swatchFour = $('.four');
+const swatchFive = $('.five');
 
-const labelOne = $(".label-one");
-const labelTwo = $(".label-two");
-const labelThree = $(".label-three");
-const labelFour = $(".label-four");
-const labelFive = $(".label-five");
+const labelOne = $('.label-one');
+const labelTwo = $('.label-two');
+const labelThree = $('.label-three');
+const labelFour = $('.label-four');
+const labelFive = $('.label-five');
 
 const swatches = [swatchOne, swatchTwo, swatchThree, swatchFour, swatchFive];
 const labels = [labelOne, labelTwo, labelThree, labelFour, labelFive];
@@ -31,36 +31,36 @@ function generateRandomRGB() {
 
 function generateRandomPalette() {
   return swatches.map(swatch => {
-    if (!swatch.hasClass("locked")) {
+    if (!swatch.hasClass('locked')) {
       assignLabels();
-      swatch.css("background-color", generateRandomRGB());
+      swatch.css('background-color', generateRandomRGB());
     }
   });
 }
 
 function assignLabels() {
   labels.map(label => {
-    label.text(label.parent().css("backgroundColor"));
+    label.text(label.parent().css('backgroundColor'));
   });
 }
 
 function toggleLockedSwatch() {
-  this.classList.toggle("locked");
+  this.classList.toggle('locked');
 }
 
 function getPaletteInfo() {
   let colorsObject = swatches.reduce((acc, color, index) => {
-    acc[`color_${index + 1}`] = color.css("backgroundColor");
+    acc[`color_${index + 1}`] = color.css('backgroundColor');
     return acc;
   }, {});
-  let currentColors = swatches.map(color => color.css("backgroundColor"));
+  let currentColors = swatches.map(color => color.css('backgroundColor'));
   savePaletteToDB(colorsObject);
-  $(".palette-name-input").val("");
+  $('.palette-name-input').val('');
 }
 
 function fetchAllProjects() {
-  $(".saved-projects").empty();
-  return fetch("http://localhost:3000/api/v1/projects")
+  $('.saved-projects').empty();
+  return fetch('/api/v1/projects')
     .then(res => res.json())
     .then(res => appendAllProjects(res))
     .catch(error => console.log(error));
@@ -72,7 +72,7 @@ function appendAllProjects(projects) {
 
 function appendOneProject(project) {
   const { project_name, id } = project;
-  $(".saved-projects")
+  $('.saved-projects')
     .append(`<div class="project ${project_name}" data-value=${id}>
     <h3 class="saved-project-title" data-value=${id}>${project_name}</h3> 
     <div class='project-palettes' id=${id}></div>
@@ -116,16 +116,16 @@ function fetchUnselectedProjectPalettes(id) {
 }
 
 function createProject() {
-  const projectName = $(".project-name-input").val();
-  $(".selected-project").text(`Selected Project: ${projectName}`);
-  $(".project-name-input").val("");
+  const projectName = $('.project-name-input').val();
+  $('.selected-project').text(`Selected Project: ${projectName}`);
+  $('.project-name-input').val('');
   saveProjectToDB(projectName);
 }
 
 function saveProjectToDB(projectName) {
-  return fetch("/api/v1/projects", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  return fetch('/api/v1/projects', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ project_name: projectName })
   })
     .then(res => res.json())
@@ -138,10 +138,10 @@ function saveProjectToDB(projectName) {
 
 function savePaletteToDB(colors) {
   const { color_1, color_2, color_3, color_4, color_5 } = colors;
-  const paletteName = $(".palette-name-input").val();
-  fetch("/api/v1/palettes", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const paletteName = $('.palette-name-input').val();
+  fetch('/api/v1/palettes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       palette_name: paletteName,
       color_1: color_1,
@@ -160,10 +160,10 @@ function savePaletteToDB(colors) {
 }
 
 function displayCurrentPalettes(palettes) {
-  $(".current-palettes").empty();
+  $('.current-palettes').empty();
   palettes.length
     ? palettes.map(palette => {
-        $(".current-palettes")
+        $('.current-palettes')
           .append(`<div class="current-palette"><h4>${palette.palette_name}</h4>
     <div class='color-square' style="background-color:${palette.color_1}"></div>
     <div class='color-square' style="background-color:${palette.color_2}"></div>
@@ -177,8 +177,8 @@ function displayCurrentPalettes(palettes) {
 }
 
 function showEmptyMessage() {
-  $(".current-palettes").empty();
-  $(".current-palettes").append(
+  $('.current-palettes').empty();
+  $('.current-palettes').append(
     `<p class='empty-message'>This project has no saved palettes!</p>`
   );
 }
@@ -186,16 +186,16 @@ function showEmptyMessage() {
 function displaySelectedPalette() {
   let selectedPalette = this.children;
 
-  swatchOne.css("background-color", selectedPalette[1].style.backgroundColor);
-  swatchTwo.css("background-color", selectedPalette[2].style.backgroundColor);
-  swatchThree.css("background-color", selectedPalette[3].style.backgroundColor);
-  swatchFour.css("background-color", selectedPalette[4].style.backgroundColor);
-  swatchFive.css("background-color", selectedPalette[5].style.backgroundColor);
+  swatchOne.css('background-color', selectedPalette[1].style.backgroundColor);
+  swatchTwo.css('background-color', selectedPalette[2].style.backgroundColor);
+  swatchThree.css('background-color', selectedPalette[3].style.backgroundColor);
+  swatchFour.css('background-color', selectedPalette[4].style.backgroundColor);
+  swatchFive.css('background-color', selectedPalette[5].style.backgroundColor);
   assignLabels();
 }
 
 function updateCurrentProject(e) {
-  currentProjectId = $(this).data("value");
+  currentProjectId = $(this).data('value');
   getProjectName();
   fetchProjectPalettes();
 }
@@ -203,8 +203,8 @@ function updateCurrentProject(e) {
 function deletePalette(e) {
   const id = e.target.value;
   fetch(`/api/v1/palettes/delete/${id}`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" }
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' }
   })
     .then(res => {
       fetchProjectPalettes();
@@ -214,23 +214,23 @@ function deletePalette(e) {
 }
 
 function getProjectName() {
-  return fetch("http://localhost:3000/api/v1/projects")
+  return fetch('/api/v1/projects')
     .then(res => res.json())
     .then(res => {
       let current = res.filter(
         project => project.id === parseInt(currentProjectId)
       );
       let project_name = current[0].project_name;
-      $(".selected-project").text(`Selected Project: ${project_name}`);
+      $('.selected-project').text(`Selected Project: ${project_name}`);
     })
     .catch(error => console.log(error));
 }
 
-generateButton.on("click", generateRandomPalette);
-$(".swatch").on("click", toggleLockedSwatch);
-createProjectButton.on("click", createProject);
-createPaletteButton.on("click", getPaletteInfo);
-$(".saved-projects").on("click", ".project", updateCurrentProject);
-$(".current-palettes")
-  .on("click", ".current-palette", displaySelectedPalette)
-  .on("click", ".current-palette", ".delete-button", deletePalette);
+generateButton.on('click', generateRandomPalette);
+$('.swatch').on('click', toggleLockedSwatch);
+createProjectButton.on('click', createProject);
+createPaletteButton.on('click', getPaletteInfo);
+$('.saved-projects').on('click', '.project', updateCurrentProject);
+$('.current-palettes')
+  .on('click', '.current-palette', displaySelectedPalette)
+  .on('click', '.current-palette', '.delete-button', deletePalette);
