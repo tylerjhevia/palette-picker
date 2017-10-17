@@ -1,37 +1,37 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const environment = process.env.NODE_ENV || "development";
-const configuration = require("./knexfile")[environment];
-const database = require("knex")(configuration);
-const http = require("http");
-const bodyParser = require("body-parser");
-const cors = require("express-cors");
-const path = require("path");
+const environment = process.env.NODE_ENV || 'development';
+const configuration = require('./knexfile')[environment];
+const database = require('knex')(configuration);
+const http = require('http');
+const bodyParser = require('body-parser');
+const cors = require('express-cors');
+const path = require('path');
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Origin', '*');
   res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
   );
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
   next();
 });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.set("port", process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3000);
 
-app.listen(app.get("port"), () => {
-  console.log(`${app.locals.title} is running on ${app.get("port")}.`);
+app.listen(app.get('port'), () => {
+  console.log(`${app.locals.title} is running on ${app.get('port')}.`);
 });
 
-app.get("/api/v1/projects", (request, response) => {
-  database("projects")
+app.get('/api/v1/projects', (request, response) => {
+  database('projects')
     .select()
     .then(projects => {
       response.status(200).json(projects);
@@ -41,16 +41,16 @@ app.get("/api/v1/projects", (request, response) => {
     });
 });
 
-app.get("/api/v1/palettes/:project_id", (request, response) => {
-  database("palettes")
-    .where("project_id", request.params.project_id)
+app.get('/api/v1/palettes/:project_id', (request, response) => {
+  database('palettes')
+    .where('project_id', request.params.project_id)
     .select()
     .then(palettes => {
       if (palettes.length) {
         response.status(200).json(palettes);
       } else {
         response.status(404).json({
-          error: "Could not find any palettes with the given project_id"
+          error: 'Could not find any palettes with the given project_id'
         });
       }
     })
@@ -59,13 +59,13 @@ app.get("/api/v1/palettes/:project_id", (request, response) => {
     });
 });
 
-app.post("/api/v1/projects", (request, response) => {
-  database("projects")
+app.post('/api/v1/projects', (request, response) => {
+  database('projects')
     .insert(
       {
         project_name: request.body.project_name
       },
-      "*"
+      '*'
     )
     .then(projectId => {
       response.status(201).json(projectId[0]);
@@ -75,8 +75,8 @@ app.post("/api/v1/projects", (request, response) => {
     });
 });
 
-app.post("/api/v1/palettes", (request, response) => {
-  database("palettes")
+app.post('/api/v1/palettes', (request, response) => {
+  database('palettes')
     .insert(
       {
         palette_name: request.body.palette_name,
@@ -87,7 +87,7 @@ app.post("/api/v1/palettes", (request, response) => {
         color_5: request.body.color_5,
         project_id: request.body.project_id
       },
-      "id"
+      'id'
     )
     .then(paletteId => {
       response.status(201).json(paletteId);
@@ -97,26 +97,26 @@ app.post("/api/v1/palettes", (request, response) => {
     });
 });
 
-app.delete("/api/v1/projects/:id", (request, response) => {
-  database("projects")
-    .where("id", request.params.id)
+app.delete('/api/v1/projects/:id', (request, response) => {
+  database('projects')
+    .where('id', request.params.id)
     .delete()
     .then(project => {
       project
         ? response.sendStatus(204)
-        : response.status(422).send({ error: "Could not find project" });
+        : response.status(422).send({ error: 'Could not find project' });
     })
     .catch(error => response.status(500).json({ error }));
 });
 
-app.delete("/api/v1/palettes/delete/:id", (request, response) => {
-  database("palettes")
-    .where("id", request.params.id)
+app.delete('/api/v1/palettes/delete/:id', (request, response) => {
+  database('palettes')
+    .where('id', request.params.id)
     .delete()
     .then(palette => {
       palette
         ? response.sendStatus(204)
-        : response.status(422).send({ error: "Could not find palette" });
+        : response.status(422).send({ error: 'Could not find palette' });
     })
     .catch(error => response.status(500).json({ error }));
 });
