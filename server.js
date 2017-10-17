@@ -30,6 +30,10 @@ app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`);
 });
 
+app.use('*', function(req, res) {
+  res.header('X-Forwarded-Proto', 'https');
+});
+
 app.get('/api/v1/projects', (request, response) => {
   database('projects')
     .select()
